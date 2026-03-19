@@ -3,6 +3,7 @@ use godot::prelude::*;
 mod bomb;
 mod bomb_spawner;
 mod gamestate;
+mod lobby;
 
 struct RustExtension;
 

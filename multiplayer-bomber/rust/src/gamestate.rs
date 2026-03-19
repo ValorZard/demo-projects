@@ -10,16 +10,18 @@ const MAX_PEERS : i32 = 12;
 
 #[derive(GodotClass)]
 #[class(base=Node)]
-struct GameState {
+pub struct GameState {
     base: Base<Node>,
     peer: Option<Gd<ENetMultiplayerPeer>>,
 
     /// Our local player's name.
     #[export]
-    player_name: GString,
+    pub player_name: GString,
 
     /// Names for remote players in id:name format.
-    players: Dictionary<i64, GString>,
+    #[export]
+    pub players: Dictionary<i64, GString>,
+    #[export]
     players_ready: Array<i64>,
 }
 
@@ -49,16 +51,16 @@ impl INode for GameState {
 impl GameState {
     // Signals to let lobby GUI know what's going on.
     #[signal]
-    fn player_list_changed();
+    pub fn player_list_changed();
     #[signal]
-    fn connection_failed();
+    pub fn connection_failed();
     #[signal]
-    fn connection_succeeded();
+    pub fn connection_succeeded();
     #[signal]
-    fn game_ended();
+    pub fn game_ended();
     // in the original code, this was an int for some reason, but this should actually be a string
     #[signal]
-    fn game_error(what: GString);
+    pub fn game_error(what: GString);
 
     // Callback from SceneTree.
     fn player_connected(&mut self, id: i64) {
@@ -104,7 +106,7 @@ impl GameState {
 
     // Lobby management functions.
     #[rpc(any_peer)]
-    fn register_player(&mut self, new_player_name: GString) {
+    pub fn register_player(&mut self, new_player_name: GString) {
         let id = self.base().get_multiplayer().expect("Should be initialized").get_remote_sender_id();
         let _ = self.players.insert(id as i64, &new_player_name);
         self.signals().player_list_changed().emit();
@@ -112,13 +114,13 @@ impl GameState {
 
 
     #[func]
-    fn unregister_player(&mut self, id: i64) {
+    pub fn unregister_player(&mut self, id: i64) {
         self.players.remove(id);
         self.signals().player_list_changed().emit();
     }
 
     #[rpc(call_local)]
-    fn load_world(&mut self) {
+    pub fn load_world(&mut self) {
         // Change scene.
         let world: Gd<Node2D> = load::<PackedScene>("res://world.tscn").instantiate_as::<Node2D>();
         let base = self.base();
@@ -139,7 +141,7 @@ impl GameState {
     }
 
     #[func]
-    fn host_game(&mut self, new_player_name: GString){
+    pub fn host_game(&mut self, new_player_name: GString){
         self.player_name = new_player_name;
         let mut peer = ENetMultiplayerPeer::new_gd();
         let _ = peer.create_server_ex(DEFAULT_PORT).max_clients(MAX_PEERS).done();
@@ -148,7 +150,7 @@ impl GameState {
     }
 
     #[func]
-    fn join_game(&mut self, ip: GString, new_player_name: GString){
+    pub fn join_game(&mut self, ip: GString, new_player_name: GString){
         self.player_name = new_player_name;
         let mut peer = ENetMultiplayerPeer::new_gd();
         let _ = peer.create_client_ex(&ip, DEFAULT_PORT).done();
@@ -157,12 +159,12 @@ impl GameState {
     }
 
     #[func]
-    fn get_player_list(&self) -> Array<GString> {
+    pub fn get_player_list(&self) -> Array<GString> {
         self.players.values_array()
     }
 
     #[func]
-    fn begin_game(&mut self) {
+    pub fn begin_game(&mut self) {
         assert!(self.base().get_multiplayer().unwrap().is_server());
         {
             let mut base = self.base_mut();
@@ -197,7 +199,7 @@ impl GameState {
     }
 
     #[func]
-    fn end_game(&mut self) {
+    pub fn end_game(&mut self) {
         let base = self.base();
         if let Some(mut world) = base.try_get_node_as::<Node2D>("/root/World") {
             world.queue_free();
@@ -207,7 +209,7 @@ impl GameState {
     }
 
     #[func]
-    fn get_player_color(p_name: GString) -> Color {
+    pub fn get_player_color(p_name: GString) -> Color {
         Color::from_hsv(godot::global::wrapf(p_name.hash_u32() as f64 * 0.001, 0.0, 1.0), 0.6, 1.0)
     }
 }
