@@ -1,6 +1,7 @@
 use godot::prelude::*;
 
 mod bomb;
+mod bomb_spawner;
 mod gamestate;
 
 struct RustExtension;

@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://cwchcyc0t4cgv" path="res://rock.tscn" id="2"]
 [ext_resource type="Script" uid="uid://i0malmurqy3m" path="res://score.gd" id="3"]
 [ext_resource type="FontFile" uid="uid://cm4wvgsyhdc2w" path="res://montserrat.otf" id="4"]
-[ext_resource type="Script" uid="uid://r8wlac3jv6ck" path="res://bomb_spawner.gd" id="6_ac5ja"]
+[ext_resource type="PackedScene" uid="uid://3uxvvsya0q1t" path="res://bomb.tscn" id="5_036b0"]
 
 [node name="World" type="Node2D" unique_id=567359237]
 
@@ -306,11 +306,11 @@ offset = Vector2(512, 300)
 process_callback = 0
 
 [node name="PlayerSpawner" type="MultiplayerSpawner" parent="." unique_id=165151297]
-_spawnable_scenes = PackedStringArray("res://player.tscn")
+_spawnable_scenes = PackedStringArray("uid://df8f82vhvgtfm")
 spawn_path = NodePath("../Players")
 
-[node name="BombSpawner" type="MultiplayerSpawner" parent="." unique_id=1836509659]
+[node name="BombSpawner" type="BombSpawner" parent="." unique_id=1018146636]
+bomb_scene = ExtResource("5_036b0")
 spawn_path = NodePath("..")
-script = ExtResource("6_ac5ja")
 
 [connection signal="pressed" from="Winner/ExitGame" to="Score" method="_on_exit_game_pressed"]
