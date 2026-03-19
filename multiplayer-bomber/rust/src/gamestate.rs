@@ -105,7 +105,7 @@ impl GameState {
     // Lobby management functions.
     #[rpc(any_peer)]
     fn register_player(&mut self, new_player_name: GString) {
-        let id = self.to_gd().get_multiplayer().expect("Should be initialized").get_remote_sender_id();
+        let id = self.base().get_multiplayer().expect("Should be initialized").get_remote_sender_id();
         let _ = self.players.insert(id as i64, &new_player_name);
         self.signals().player_list_changed().emit();
     }
