@@ -207,7 +207,7 @@ impl GameState {
     }
 
     #[func]
-    fn get_player_color(&self, p_name: GString) -> Color {
+    fn get_player_color(p_name: GString) -> Color {
         Color::from_hsv(godot::global::wrapf(p_name.hash_u32() as f64 * 0.001, 0.0, 1.0), 0.6, 1.0)
     }
 }
