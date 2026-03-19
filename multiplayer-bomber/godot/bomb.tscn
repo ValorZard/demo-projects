@@ -1,6 +1,5 @@
 [gd_scene format=3 uid="uid://3uxvvsya0q1t"]
 
-[ext_resource type="Script" uid="uid://btdrowbhvfuqk" path="res://bomb.gd" id="1"]
 [ext_resource type="Texture2D" uid="uid://uptqordg8d6j" path="res://brickfloor.png" id="2"]
 [ext_resource type="Texture2D" uid="uid://d3orgoo60q80e" path="res://explosion.png" id="3"]
 
@@ -76,9 +75,8 @@ _data = {
 &"anim": SubResource("Animation_21j5c")
 }
 
-[node name="Bomb" type="Area2D" unique_id=175169255]
+[node name="Bomb" type="Bomb" unique_id=1195704960]
 monitorable = false
-script = ExtResource("1")
 
 [node name="Sprite" type="Sprite2D" parent="." unique_id=1510220331]
 self_modulate = Color(1, 1, 1, 0)
@@ -110,6 +108,7 @@ scale_amount_curve = SubResource("Curve_4yges")
 
 [node name="Explosion2" type="CPUParticles2D" parent="." unique_id=1623727328]
 rotation = 1.57162
+scale = Vector2(0.99999994, 0.99999994)
 emitting = false
 texture = ExtResource("3")
 lifetime = 0.5
@@ -127,6 +126,3 @@ scale_amount_curve = SubResource("Curve_4yges")
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1700475256]
 libraries/ = SubResource("AnimationLibrary_h2w7m")
 autoplay = &"anim"
-
-[connection signal="body_entered" from="." to="." method="_on_bomb_body_enter"]
-[connection signal="body_exited" from="." to="." method="_on_bomb_body_exit"]

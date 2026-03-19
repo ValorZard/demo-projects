@@ -1,6 +1,6 @@
 use godot::prelude::*;
 
-
+mod bomb;
 mod gamestate;
 
 struct RustExtension;
