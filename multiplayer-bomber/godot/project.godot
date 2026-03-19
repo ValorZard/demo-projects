@@ -21,7 +21,7 @@ config/icon="res://icon.webp"
 
 [autoload]
 
-gamestate="*res://gamestate.gd"
+gamestate="*uid://dylaslkwt4llp"
 
 [debug]
 
