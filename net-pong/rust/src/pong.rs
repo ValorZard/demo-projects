@@ -80,7 +80,7 @@ impl Pong {
 
         if game_ended {
             self.exit_game.show();
-            self.ball.rpc("stop", &[]);
+            let _ = self.ball.rpcs().stop().call();
         }
     }
 

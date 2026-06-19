@@ -38,19 +38,16 @@ impl IArea2D for Ball {
             self.direction.y = -self.direction.y;
         }
 
-        let mut parent = self.base().get_parent().unwrap().cast::<Pong>();
-        // Use base_mut() to allow for reentrancy – required if a game stops, and we need to reset our ball.
-        let mut guard = self.base_mut();
-        if guard.is_multiplayer_authority() {
+        let parent = self.base().get_parent().unwrap().cast::<Pong>();
+        if self.base().is_multiplayer_authority() {
             // Only the master will decide when the ball is out on
             // the left side (its own side). This makes the game
             // playable even if latency is high and ball is going
             // fast. Otherwise, the ball might be out in the other
             // player's screen but not this one.
             if ball_pos.x < 0.0 {
-                let args = vslice![false];
-                parent.rpc("update_score", args);
-                guard.rpc("reset_ball", args);
+                let _ = parent.rpcs().update_score(false).call();
+                let _ = self.rpcs().reset_ball(false).call();
             }
         } else {
             // Only the puppet will decide when the ball is out on
@@ -59,9 +56,8 @@ impl IArea2D for Ball {
             // is going fast. Otherwise, the ball might be out in the
             // other player's screen but not this one.
             if ball_pos.x > screen_size.x {
-                let args = vslice![true];
-                parent.rpc("update_score", args);
-                guard.rpc("reset_ball", args);
+                let _ = parent.rpcs().update_score(true).call();
+                let _ = self.rpcs().reset_ball(true).call();
             }
         }
     }
@@ -90,7 +86,10 @@ impl Ball {
     #[rpc(any_peer, call_local)]
     fn reset_ball(&mut self, for_left: bool) {
         let screen_center = self.base().get_viewport_rect().size / 2.0;
-        self.base_mut().set_position(screen_center);
+        // drop base mut to avoid panics
+        {
+            self.base_mut().set_position(screen_center);
+        }
         if for_left {
             self.direction = Vector2::LEFT;
         } else {
