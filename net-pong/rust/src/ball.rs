@@ -86,10 +86,7 @@ impl Ball {
     #[rpc(any_peer, call_local)]
     fn reset_ball(&mut self, for_left: bool) {
         let screen_center = self.base().get_viewport_rect().size / 2.0;
-        // drop base mut to avoid panics
-        {
-            self.base_mut().set_position(screen_center);
-        }
+        self.base_mut().set_position(screen_center);
         if for_left {
             self.direction = Vector2::LEFT;
         } else {
