@@ -48,9 +48,8 @@ impl IArea2D for Ball {
             if ball_pos.x < 0.0 {
                 let _ = parent.rpcs().update_score(false).call();
                 godot_print!("Reset ball right");
-                match self.rpcs().reset_ball(false).call() {
-                    Ok(()) => todo!(),
-                    Err(e) => godot_print!("Rpc error {e}"),
+                if let Err(e) = self.rpcs().reset_ball(false).call() {
+                    godot_print!("Rpc error {e}");
                 }
             }
         } else {
@@ -62,9 +61,8 @@ impl IArea2D for Ball {
             if ball_pos.x > screen_size.x {
                 let _ = parent.rpcs().update_score(true).call();
                 godot_print!("Reset ball left");
-                match self.rpcs().reset_ball(true).call() {
-                    Ok(()) => todo!(),
-                    Err(e) => godot_print!("Rpc error {e}"),
+                if let Err(e) = self.rpcs().reset_ball(true).call() {
+                    godot_print!("Rpc error {e}");
                 }
             }
         }
@@ -103,5 +101,6 @@ impl Ball {
             self.direction = Vector2::RIGHT;
         }
         self.speed = DEFAULT_SPEED;
+        godot_print!("Reset Ball RPC finished");
     }
 }
