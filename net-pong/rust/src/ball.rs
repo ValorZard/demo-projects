@@ -47,7 +47,11 @@ impl IArea2D for Ball {
             // player's screen but not this one.
             if ball_pos.x < 0.0 {
                 let _ = parent.rpcs().update_score(false).call();
-                let _ = self.rpcs().reset_ball(false).call();
+                godot_print!("Reset ball right");
+                match self.rpcs().reset_ball(false).call() {
+                    Ok(()) => todo!(),
+                    Err(e) => godot_print!("Rpc error {e}"),
+                }
             }
         } else {
             // Only the puppet will decide when the ball is out on
@@ -57,7 +61,11 @@ impl IArea2D for Ball {
             // other player's screen but not this one.
             if ball_pos.x > screen_size.x {
                 let _ = parent.rpcs().update_score(true).call();
-                let _ = self.rpcs().reset_ball(true).call();
+                godot_print!("Reset ball left");
+                match self.rpcs().reset_ball(true).call() {
+                    Ok(()) => todo!(),
+                    Err(e) => godot_print!("Rpc error {e}"),
+                }
             }
         }
     }
@@ -86,7 +94,9 @@ impl Ball {
     #[rpc(any_peer, call_local)]
     fn reset_ball(&mut self, for_left: bool) {
         let screen_center = self.base().get_viewport_rect().size / 2.0;
+        godot_print!("Modifying position");
         self.base_mut().set_position(screen_center);
+        godot_print!("Position modified");
         if for_left {
             self.direction = Vector2::LEFT;
         } else {
