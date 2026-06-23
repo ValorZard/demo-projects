@@ -46,7 +46,13 @@ impl IArea2D for Ball {
             // fast. Otherwise, the ball might be out in the other
             // player's screen but not this one.
             if ball_pos.x < 0.0 {
-                let _ = parent.rpcs().update_score(false).call();
+                // When calling the parent rpc, we have to create a base_mut() guard for the ball
+                // This is because the update_score() RPC calls an RPC back to Ball inside of it
+                // And, if we don't have a guard set up, that could cause a panic since we are doing a mutable reborrow
+                {
+                    let _guard = self.base_mut();
+                    let _ = parent.rpcs().update_score(false).call();
+                }
                 godot_print!("Reset ball right");
                 if let Err(e) = self.rpcs().reset_ball(false).call() {
                     godot_print!("Rpc error {e}");
@@ -59,7 +65,10 @@ impl IArea2D for Ball {
             // is going fast. Otherwise, the ball might be out in the
             // other player's screen but not this one.
             if ball_pos.x > screen_size.x {
-                let _ = parent.rpcs().update_score(true).call();
+                {
+                    let _guard = self.base_mut();
+                    let _ = parent.rpcs().update_score(true).call();
+                }
                 godot_print!("Reset ball left");
                 if let Err(e) = self.rpcs().reset_ball(true).call() {
                     godot_print!("Rpc error {e}");
