@@ -87,6 +87,7 @@ impl Ball {
     #[rpc(any_peer, call_local)]
     fn stop(&mut self) {
         self.stopped = true;
+        godot_print!("Ball stopped");
     }
 
     #[rpc(any_peer, call_local)]
