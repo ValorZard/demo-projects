@@ -25,6 +25,9 @@ pub struct Pong {
     exit_game: OnEditor<Gd<Button>>,
     #[export]
     ball: OnEditor<Gd<Ball>>,
+    #[export]
+    #[init(val = SCORE_TO_WIN)]
+    score_to_win: i32,
     base: Base<Node2D>,
 }
 
@@ -70,10 +73,10 @@ impl Pong {
         }
 
         let mut game_ended = false;
-        if self.score_left == SCORE_TO_WIN {
+        if self.score_left == self.score_to_win {
             self.winner_left.show();
             game_ended = true;
-        } else if self.score_right == SCORE_TO_WIN {
+        } else if self.score_right == self.score_to_win {
             self.winner_right.show();
             game_ended = true;
         }
